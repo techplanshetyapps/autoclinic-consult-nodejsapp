@@ -1,0 +1,20 @@
+# Render deployment blueprint — deploy with "New +  -> Blueprint" in the
+# Render dashboard, pointing at this repo, or just create a Web Service
+# manually with the same build/start commands and env vars below.
+
+services:
+  - type: web
+    name: autoclinic-consult-api
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: GOOGLE_GENERATIVE_AI_API_KEY
+        sync: false
+      - key: GEMMA_MODEL
+        value: gemma-3-27b-it
+      - key: GEMMA_PROVIDER
+        value: google
+      - key: HF_DATASET_ID
+        value: openlifescienceai/medmcqa

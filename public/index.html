@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>AutoClinic Consult — Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  :root { color-scheme: dark; }
+  body { font-family: -apple-system, Segoe UI, sans-serif; background: #0e1116; color: #eef1f5; margin: 0; padding: 2rem; }
+  h1 { font-size: 1.4rem; margin-bottom: .25rem; }
+  .sub { color: #9aa4b2; margin-bottom: 1.5rem; }
+  .card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 1.25rem; backdrop-filter: blur(6px); margin-bottom: 1.25rem; }
+  label { display: block; font-size: .8rem; color: #9aa4b2; margin-bottom: .25rem; }
+  select, input, button { width: 100%; padding: .55rem .7rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: #171b22; color: #eef1f5; margin-bottom: .8rem; font-size: .95rem; }
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: .8rem; }
+  button { cursor: pointer; background: #2f6feb; border: none; font-weight: 600; }
+  button:hover { background: #3b7dfb; }
+  #status, #answer { font-size: .9rem; color: #c7ccd4; white-space: pre-wrap; }
+  .src { font-size: .78rem; color: #8992a1; border-top: 1px solid rgba(255,255,255,0.08); padding-top: .4rem; margin-top: .4rem; }
+</style>
+</head>
+<body>
+  <h1>AutoClinic Consult</h1>
+  <div class="sub">Gemma RAG dashboard over a Hugging Face medical Q&amp;A slice — sibling frontend to the SwiftUI iPad app.</div>
+
+  <div class="card">
+    <div class="grid">
+      <div><label>Subject</label><select id="subjectName"></select></div>
+      <div><label>Topic</label><select id="topicName"></select></div>
+      <div><label>Choice type</label><select id="choiceType"></select></div>
+      <div><label>Correct option</label><select id="correctOption"></select></div>
+    </div>
+    <button onclick="ingest()">Ingest Medical Records</button>
+    <div id="status">Not yet ingested.</div>
+  </div>
+
+  <div class="card">
+    <label>Ask a question about the ingested records</label>
+    <input id="question" placeholder="e.g. What is first-line treatment discussed for atrial fibrillation?" />
+    <button onclick="ask()">Ask Gemma</button>
+    <div id="answer"></div>
+  </div>
+
+<script>
+const API = ""; // same-origin; set to your Render URL if hosting the dashboard elsewhere
+
+async function loadFilters() {
+  const res = await fetch(`${API}/api/filters`);
+  const filters = await res.json();
+  for (const key of Object.keys(filters)) {
+    const el = document.getElementById(key);
+    el.innerHTML = '<option value="">Any</option>' + filters[key].map(v => `<option value="${v}">${v}</option>`).join("");
+  }
+}
+
+async function ingest() {
+  const statusEl = document.getElementById("status");
+  statusEl.textContent = "Ingesting…";
+  const body = {
+    limit: 200,
+    subjectName: document.getElementById("subjectName").value || undefined,
+    topicName: document.getElementById("topicName").value || undefined,
+    choiceType: document.getElementById("choiceType").value || undefined,
+    correctOption: document.getElementById("correctOption").value || undefined,
+  };
+  const res = await fetch(`${API}/api/ingest`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  const json = await res.json();
+  statusEl.textContent = `${json.message} — ${json.recordsIngested} records, ${json.chunksIngested} chunks.`;
+}
+
+async function ask() {
+  const question = document.getElementById("question").value;
+  if (!question) return;
+  const answerEl = document.getElementById("answer");
+  answerEl.textContent = "Thinking…";
+  const res = await fetch(`${API}/api/query`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ question, topK: 4 }),
+  });
+  const json = await res.json();
+  answerEl.innerHTML = `<div>${json.answer}</div>` +
+    json.sources.map(s => `<div class="src">[${s.subjectName} / ${s.topicName}] score ${s.score.toFixed(3)} — ${s.text.slice(0,140)}…</div>`).join("");
+}
+
+loadFilters();
+</script>
+</body>
+</html>
