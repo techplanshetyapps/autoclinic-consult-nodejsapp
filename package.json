@@ -9,12 +9,13 @@
     "dev": "node --watch index.js"
   },
   "dependencies": {
-    "ai": "^4.0.0",
     "@ai-sdk/google": "^1.0.0",
-    "llamaindex": "^0.8.0",
-    "express": "^4.19.2",
+    "@aws-crypto/sha256-js": "^5.2.0",
+    "ai": "^4.0.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "llamaindex": "^0.8.0",
     "node-fetch": "^3.3.2"
   },
   "engines": {

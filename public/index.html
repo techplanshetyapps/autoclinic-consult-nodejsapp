@@ -6,16 +6,27 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <style>
   :root { color-scheme: dark; }
-  body { font-family: -apple-system, Segoe UI, sans-serif; background: #0e1116; color: #eef1f5; margin: 0; padding: 2rem; }
+  body { font-family: -apple-system, Segoe UI, sans-serif; background: #0e1116;
+      background-image:
+      radial-gradient(at 15% 20%, rgba(47, 111, 235, 0.35) 0px, transparent 55%),
+      radial-gradient(at 85% 10%, rgba(155, 92, 246, 0.32) 0px, transparent 55%),
+      radial-gradient(at 10% 85%, rgba(16, 185, 129, 0.28) 0px, transparent 55%),
+      radial-gradient(at 85% 90%, rgba(162, 200, 211, 0.26) 0px, transparent 55%),
+      radial-gradient(at 50% 50%, rgba(14, 17, 22, 1) 0px, #0e1116 70%);
+    background-size: 200% 200%, 200% 200%, 200% 200%, 200% 200%, 100% 100%;
+    background-position: 0% 0%, 100% 0%, 0% 100%, 100% 100%, 0 0;
+    background-attachment: fixed;
+    animation: liquidShift 22s ease-in-out infinite;
+    color: #9e8b91; margin: 0; padding: 2rem; }
   h1 { font-size: 1.4rem; margin-bottom: .25rem; }
   .sub { color: #9aa4b2; margin-bottom: 1.5rem; }
-  .card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 1.25rem; backdrop-filter: blur(6px); margin-bottom: 1.25rem; }
+  .card { background: rgba(78, 103, 119, 0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 1.25rem; backdrop-filter: blur(6px); margin-bottom: 1.25rem; }
   label { display: block; font-size: .8rem; color: #9aa4b2; margin-bottom: .25rem; }
-  select, input, button { width: 100%; padding: .55rem .7rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: #171b22; color: #eef1f5; margin-bottom: .8rem; font-size: .95rem; }
+  select, input, button { width: 100%; padding: .55rem .7rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: rgba(107, 153, 251, 0.04); color: #9e8b91; margin-bottom: .8rem; font-size: .95rem; }
   .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: .8rem; }
   button { cursor: pointer; background: #2f6feb; border: none; font-weight: 600; }
   button:hover { background: #3b7dfb; }
-  #status, #answer { font-size: .9rem; color: #c7ccd4; white-space: pre-wrap; }
+  #status, #answer { font-size: .9rem; color: #9e8b91; white-space: pre-wrap; }
   .src { font-size: .78rem; color: #8992a1; border-top: 1px solid rgba(255,255,255,0.08); padding-top: .4rem; margin-top: .4rem; }
 </style>
 </head>
